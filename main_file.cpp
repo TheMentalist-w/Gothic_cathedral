@@ -30,9 +30,6 @@ Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 #include "constants.h"
 #include "lodepng.h"
 #include "shaderprogram.h"
-#include "myCube.h"
-#include "myTeapot.h"
-#include "candle.h"
 #include "persianCarpet12.h"
 
 float speed = 0;
@@ -49,7 +46,6 @@ glm::vec3 c_position = glm::vec3(0.0f, 0.0f, 5.0f);
 float* vertices = persianCarpet12Vertices;
 float* normals = persianCarpet12Normals;
 float* texCoords = persianCarpet12TexCoords0;
-float* colors = myTeapotColors;
 int vertexCount = persianCarpet12VertexCount;
 
 
