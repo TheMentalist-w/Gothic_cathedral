@@ -101,7 +101,7 @@ float stainedGlass8Normals[] = { 0, -1, 0, 0,
 0, 1, 0, 0,
 0, 1, 0, 0 };
 
-float stainedGlass8TexCoords[] = { 1, 0,
+float stainedGlass8TexCoords0[] = { 1, 0,
 0, 1,
 0, 0,
 1, 0,

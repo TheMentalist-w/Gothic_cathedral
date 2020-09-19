@@ -1,10 +1,10 @@
-#ifndef MESH1_H_INCLUDED
-#define MESH1_H_INCLUDED
+#ifndef STAINEDGLASS1_H_INCLUDED
+#define STAINEDGLASS1_H_INCLUDED
 
 
-int mesh1VertexCount = 25;
+int stainedGlass1VertexCount = 25;
 
-float mesh1Vertices[] = { -0.176195, 0.5, 0, 1,
+float stainedGlass1Vertices[] = { -0.176195, 0.5, 0, 1,
 0.176195, -0.5, 0, 1,
 -0.176195, -0.5, 0, 1,
 -1.13813, 0.5, 0, 1,
@@ -29,7 +29,7 @@ float mesh1Vertices[] = { -0.176195, 0.5, 0, 1,
 -1.73139, 0.496125, 0, 1,
 -1.73139, -0.502589, 0, 1};
 
-float mesh1Normals[] = { 0, 0, -1, 0,
+float stainedGlass1Normals[] = { 0, 0, -1, 0,
 0, 0, -1, 0,
 0, 0, -1, 0,
 0, 0, -1, 0,
@@ -54,7 +54,7 @@ float mesh1Normals[] = { 0, 0, -1, 0,
 0, 0, -1, 0,
 0, 0, -1, 0};
 
-float mesh1TexCoords[] = { 0, 1,
+float stainedGlass1TexCoords0[] = { 0, 1,
 0.242268, 0,
 0, 0,
 0.759354, 1,

@@ -19,10 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="candle.h" />
     <ClInclude Include="circle238.h" />
     <ClInclude Include="circle3.h" />
-    <ClInclude Include="circle3v1.h" />
     <ClInclude Include="circle43.h" />
     <ClInclude Include="circle44.h" />
     <ClInclude Include="circle45.h" />
@@ -31,27 +29,20 @@
     <ClInclude Include="circle50.h" />
     <ClInclude Include="circle500.h" />
     <ClInclude Include="circle562.h" />
-    <ClInclude Include="circleMesh.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="cube10.h" />
     <ClInclude Include="cube3.h" />
     <ClInclude Include="cylinder0.h" />
-    <ClInclude Include="cylined2.h" />
+    <ClInclude Include="cylinder2.h" />
     <ClInclude Include="doors.h" />
     <ClInclude Include="lodepng.h" />
-    <ClInclude Include="mesh0.h" />
-    <ClInclude Include="mesh1.h" />
-    <ClInclude Include="mesh2.h" />
-    <ClInclude Include="mesh4.h" />
-    <ClInclude Include="Mesh_1.h" />
-    <ClInclude Include="myCube.h" />
-    <ClInclude Include="myTeapot.h" />
     <ClInclude Include="persianCarpet12.h" />
     <ClInclude Include="plane014.h" />
     <ClInclude Include="plane014v1.h" />
     <ClInclude Include="plane18.h" />
     <ClInclude Include="plane3.h" />
     <ClInclude Include="shaderprogram.h" />
+    <ClInclude Include="stainedGlass1.h" />
     <ClInclude Include="stainedGlass2.h" />
     <ClInclude Include="stainedGlass3.h" />
     <ClInclude Include="stainedGlass4.h" />
@@ -59,8 +50,6 @@
     <ClInclude Include="stainedGlass6.h" />
     <ClInclude Include="stainedGlass7.h" />
     <ClInclude Include="stainedGlass8.h" />
-    <ClInclude Include="torus2.h" />
-    <ClInclude Include="torus6.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lodepng.cpp" />
@@ -76,7 +65,7 @@
     <ProjectGuid>{7288C82C-3F3E-4501-8878-A310FCA284FE}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>plszkielet06win</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

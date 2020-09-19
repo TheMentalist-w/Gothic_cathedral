@@ -17,7 +17,7 @@ float stainedGlass6Normals[] = { 0, 0, 1, 0,
 0, 0, 1, 0,
 0, 0, 1, 0 };
 
-float stainedGlass6TexCoords[] = { 1, 0,
+float stainedGlass6TexCoords0[] = { 1, 0,
 0, 1,
 0, 0,
 1, 0,

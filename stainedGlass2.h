@@ -54,7 +54,7 @@ float stainedGlass2Normals[] = { 0, 0, 1, 0,
 0, 0, 1, 0,
 0, 0, 1, 0 };
 
-float stainedGlass2TexCoords[] = { 0.232558, 0,
+float stainedGlass2TexCoords0[] = { 0.232558, 0,
 0, 1,
 0, 0,
 1, 0,
