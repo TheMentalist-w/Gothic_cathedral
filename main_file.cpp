@@ -44,27 +44,26 @@ Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 #include "plane014.h"
 #include "plane014v1.h"
 #include "plane3.h"
-//#include "persianCarpet12.h"
 #include "doors.h"
 #include "cube10.h"
 #include "cube3.h"
 #include "circle562.h"
 #include "circle50.h"
 #include "circle238.h"
-#include "circle500.h"
 #include "circle48.h"
 #include "circle46.h"
 #include "circle45.h"
 #include "circle44.h"
 #include "circle43.h"
 #include "circle3.h"
+#include "circle500.h"
 
 float speed = 0;
 float w_speed = 0;
 float speed_x = 0;
 float speed_y = 0;
 float aspectRatio = 1;
-GLuint tex[19];
+GLuint tex[26];
 ShaderProgram* sp;
 glm::vec3 c_position = glm::vec3(0.0f, -15.0f, 0.0f);
 
@@ -152,6 +151,13 @@ void initOpenGLProgram(GLFWwindow* window) {
 	tex[16] = readTexture("TextureAtlasSol.png");
 	tex[17] = readTexture("Door.png");
 	tex[18] = readTexture("TextureAtlasMurBasExt.png");
+	tex[19] = readTexture("TextureAtlasMurBasInt.png");
+	tex[20] = readTexture("TextureAtlasArche.png");
+	tex[21] = readTexture("TextureAtlasMurHaut.png");
+	tex[22] = readTexture("TextureAtlasDebord.png");
+	tex[23] = readTexture("TextureAtlasPlafond.png");
+	tex[24] = readTexture("TextureAtlasBanc.png");
+	tex[25] = readTexture("TextureAtlasArcheExt.png");
 }
 
 //Zwolnienie zasobów zajętych przez program
@@ -180,23 +186,22 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 
 	glm::mat4 P = glm::perspective(50.0f * PI / 180.0f, aspectRatio, 0.01f, 100.0f); //Wylicz macierz rzutowania
 
-	glm::mat4 M = glm::mat4(1.0f);
-	M = glm::translate(M, glm::vec3(0.0f, 20.0f, 0.0f));
-	M = glm::rotate(M, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
-	M = glm::rotate(M, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
-	//M = glm::rotate(M,angle_y,glm::vec3(1.0f,0.0f,0.0f)); //Wylicz macierz modelu
-	//M = glm::rotate(M,angle_x,glm::vec3(0.0f,1.0f,0.0f)); //Wylicz macierz modelu
 
 	sp->use();//Aktywacja programu cieniującego
 	//Przeslij parametry programu cieniującego do karty graficznej
 	glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P));
 	glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
-	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M));
 
 
 
 	//Drawing elements
 	//Columns
+
+	glm::mat4 M = glm::mat4(1.0f);
+	M = glm::translate(M, glm::vec3(0.0f, 20.0f, 0.0f));
+	M = glm::rotate(M, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
+	M = glm::rotate(M, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
 	glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, cylinder2Vertices);
@@ -215,6 +220,9 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 
 
 	//Columns pedestals
+
+	glm::mat4 MC0 = M;
+	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(MC0));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
 	glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, cylinder0Vertices);
@@ -257,6 +265,9 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 
 	//plane014v1
 
+	glm::mat4 M014V1 = M014;
+	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M014V1));
+
 	glEnableVertexAttribArray(sp->a("vertex"));
 	glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, plane014v1Vertices);
 
@@ -273,6 +284,9 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 	glDrawArrays(GL_TRIANGLES, 0, plane014v1VertexCount); //Draw
 
 	//plane18
+
+	glm::mat4 MP18 = M014;
+	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(MP18));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
 	glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, plane018Vertices);
@@ -356,11 +370,11 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 	glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, plane3Normals);
 
 	glEnableVertexAttribArray(sp->a("texCoord0"));
-	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, plane3TexCoords0);
+	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, plane3TexCoords1);
 
 	glUniform1i(sp->u("textureMap0"), 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, tex[0]);
+	glBindTexture(GL_TEXTURE_2D, tex[24]);
 
 	glDrawArrays(GL_TRIANGLES, 0, plane3VertexCount); //Draw
 
@@ -381,16 +395,19 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 	glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, circle43Normals);
 
 	glEnableVertexAttribArray(sp->a("texCoord0"));
-	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, circle43TexCoords0);
+	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, circle43TexCoords1);
 
 	glUniform1i(sp->u("textureMap0"), 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, tex[0]);
+	glBindTexture(GL_TEXTURE_2D, tex[19]);
 
 	glDrawArrays(GL_TRIANGLES, 0, circle43VertexCount); //Draw
 
 	//circle50
 	// arcs between columns - lower part
+
+	glm::mat4 MC50 = M43;
+	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(MC50));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
 	glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, circle50Vertices);
@@ -399,31 +416,13 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 	glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, circle50Normals);
 
 	glEnableVertexAttribArray(sp->a("texCoord0"));
-	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, circle50TexCoords0);
+	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, circle50TexCoords1);
 
 	glUniform1i(sp->u("textureMap0"), 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, tex[0]);
+	glBindTexture(GL_TEXTURE_2D, tex[20]);
 
 	glDrawArrays(GL_TRIANGLES, 0, circle50VertexCount); //Draw
-
-
-	//circle500
-
-	glEnableVertexAttribArray(sp->a("vertex"));
-	glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, circle500Vertices);
-
-	glEnableVertexAttribArray(sp->a("normal"));
-	glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, circle500Normals);
-
-	glEnableVertexAttribArray(sp->a("texCoord0"));
-	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, circle500TexCoords0);
-
-	glUniform1i(sp->u("textureMap0"), 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, tex[0]);
-
-	glDrawArrays(GL_TRIANGLES, 0, circle500VertexCount); //Draw
 
 
 	//circle45
@@ -527,7 +526,7 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 	//stainedGlass3
 
 	glm::mat4 MS3 = glm::mat4(1.0f);
-	MS3 = glm::translate(MS3, glm::vec3(0.0f, 12.0f, -20.0f));
+	MS3 = glm::translate(MS3, glm::vec3(0.0f, 11.0f, -20.0f));
 	MS3 = glm::scale(MS3, glm::vec3(18.0f, 18.0f, 18.0f));
 	MS3 = glm::rotate(MS3, PI, glm::vec3(1.0f, 0.0f, 0.0f)); //Wylicz macierz modelu
 	MS3 = glm::rotate(MS3, PI, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
@@ -552,7 +551,7 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 	//stainedGlass1
 
 	glm::mat4 MS1 = glm::mat4(1.0f);
-	MS1 = glm::translate(MS1, glm::vec3(-13.5f, 11.0f, 0.0f));
+	MS1 = glm::translate(MS1, glm::vec3(-13.5f, 10.0f, 0.0f));
 	MS1 = glm::scale(MS1, glm::vec3(16.5f, 16.5f, 16.5f));
 	MS1 = glm::rotate(MS1, PI, glm::vec3(1.0f, 0.0f, 0.0f)); //Wylicz macierz modelu
 	MS1 = glm::rotate(MS1, -90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
@@ -578,7 +577,7 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 	//stainedGlass2
 
 	glm::mat4 MS2 = glm::mat4(1.0f);
-	MS2 = glm::translate(MS2, glm::vec3(13.5f, 11.0f, 47.0f));
+	MS2 = glm::translate(MS2, glm::vec3(13.5f, 10.0f, 47.0f));
 	MS2 = glm::scale(MS2, glm::vec3(17.5f, 17.5f, 17.5f));
 	MS2 = glm::rotate(MS2, PI, glm::vec3(1.0f, 0.0f, 0.0f)); //Wylicz macierz modelu
 	MS2 = glm::rotate(MS2, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
@@ -603,7 +602,7 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 	//stainedGlass4
 
 	glm::mat4 MS4 = glm::mat4(1.0f);
-	MS4 = glm::translate(MS4, glm::vec3(10.0f, 11.0f, -13.5f));
+	MS4 = glm::translate(MS4, glm::vec3(10.0f, 10.0f, -13.5f));
 	MS4 = glm::scale(MS4, glm::vec3(17.0f, 17.0f, 17.0f));
 	MS4 = glm::rotate(MS4, PI, glm::vec3(1.0f, 0.0f, 0.0f)); //Wylicz macierz modelu
 	MS4 = glm::rotate(MS4, 60.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
@@ -627,7 +626,7 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 	//stainedGlass4v1
 
 	glm::mat4 MS4v1 = glm::mat4(1.0f);
-	MS4v1 = glm::translate(MS4v1, glm::vec3(-10.0f, 11.0f, -13.5f));
+	MS4v1 = glm::translate(MS4v1, glm::vec3(-10.0f, 10.0f, -13.5f));
 	MS4v1 = glm::scale(MS4v1, glm::vec3(17.0f, 17.0f, 17.0f));
 	MS4v1 = glm::rotate(MS4v1, PI, glm::vec3(1.0f, 0.0f, 0.0f)); //Wylicz macierz modelu
 	MS4v1 = glm::rotate(MS4v1, -60.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
@@ -646,7 +645,7 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[7]);
 
-	glDrawArrays(GL_TRIANGLES, 0, stainedGlass3VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, stainedGlass4VertexCount); //Draw
 
 
 	//stainedGlass7
@@ -724,7 +723,7 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 	//doors
 
 	glm::mat4 MD = glm::mat4(1.0f);
-	MD = glm::translate(MD, glm::vec3(0.0f, -11.5f, 55.0f));
+	MD = glm::translate(MD, glm::vec3(0.0f, -11.7f, 55.0f));
 	MD = glm::scale(MD, glm::vec3(14.0f, 14.0f, 14.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(MD));
 
@@ -747,7 +746,7 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 	//circle562
 
 	glm::mat4 M562 = glm::mat4(1.0f);
-	M562 = glm::translate(M562, glm::vec3(0.0f, 17.5f, -19.3f));
+	M562 = glm::translate(M562, glm::vec3(0.0f, 16.5f, -19.3f));
 	M562 = glm::rotate(M562, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
 	M562 = glm::rotate(M562, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M562));
@@ -759,11 +758,11 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 	glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, circle562Normals);
 
 	glEnableVertexAttribArray(sp->a("texCoord0"));
-	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, circle562TexCoords0);
+	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, circle562TexCoords1);
 
 	glUniform1i(sp->u("textureMap0"), 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, tex[0]);
+	glBindTexture(GL_TEXTURE_2D, tex[21]);
 
 	glDrawArrays(GL_TRIANGLES, 0, circle562VertexCount); //Draw
 
@@ -785,11 +784,11 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 	glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, cube10Normals);
 
 	glEnableVertexAttribArray(sp->a("texCoord0"));
-	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, cube10TexCoords0);
+	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, cube10TexCoords1);
 
 	glUniform1i(sp->u("textureMap0"), 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, tex[0]);
+	glBindTexture(GL_TEXTURE_2D, tex[22]);
 
 	glDrawArrays(GL_TRIANGLES, 0, cube10VertexCount); //Draw
 
@@ -797,7 +796,7 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 	//Circle238
 
 	glm::mat4 M238 = glm::mat4(1.0f);
-	M238 = glm::translate(M238, glm::vec3(0.0f, -10.0f, -29.0f));
+	M238 = glm::translate(M238, glm::vec3(0.1f, -9.8f, -29.0f));
 	M238 = glm::rotate(M238, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
 	M238 = glm::rotate(M238, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M238));
@@ -813,15 +812,39 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 
 	glUniform1i(sp->u("textureMap0"), 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, tex[0]);
+	glBindTexture(GL_TEXTURE_2D, tex[25]);
 
 	glDrawArrays(GL_TRIANGLES, 0, circle238VertexCount); //Draw
+
+
+	//circle500
+
+	glm::mat4 M500 = glm::mat4(1.0f);
+	M500 = glm::translate(M500, glm::vec3(-9.2f, 14.5f, -13.3f));
+	M500 = glm::rotate(M500, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
+	M500 = glm::rotate(M500, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M500));
+
+	glEnableVertexAttribArray(sp->a("vertex"));
+	glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, circle500Vertices);
+
+	glEnableVertexAttribArray(sp->a("normal"));
+	glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, circle500Normals);
+
+	glEnableVertexAttribArray(sp->a("texCoord0"));
+	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, circle500TexCoords1);
+
+	glUniform1i(sp->u("textureMap0"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, tex[25]);
+
+	glDrawArrays(GL_TRIANGLES, 0, circle500VertexCount); //Draw
 
 
 	//circle44
 
 	glm::mat4 M44 = glm::mat4(1.0f);
-	M44 = glm::translate(M44, glm::vec3(0.0f, 14.0f, -8.0f));
+	M44 = glm::translate(M44, glm::vec3(0.0f, 14.3f, -8.0f));
 	M44 = glm::rotate(M44, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
 	M44 = glm::rotate(M44, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M44));
@@ -833,11 +856,11 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 	glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, circle44Normals);
 
 	glEnableVertexAttribArray(sp->a("texCoord0"));
-	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, circle44TexCoords0);
+	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, circle44TexCoords1);
 
 	glUniform1i(sp->u("textureMap0"), 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, tex[0]);
+	glBindTexture(GL_TEXTURE_2D, tex[23]);
 
 	glDrawArrays(GL_TRIANGLES, 0, circle44VertexCount); //Draw
 
