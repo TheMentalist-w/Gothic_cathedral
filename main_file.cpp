@@ -103,10 +103,10 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 		if (key == GLFW_KEY_RIGHT) speed_x = PI / 2;
 		if (key == GLFW_KEY_UP) speed_y = PI / 2;
 		if (key == GLFW_KEY_DOWN) speed_y = -PI / 2;
-		if (key == GLFW_KEY_W) w_speed = 3.0;
-		if (key == GLFW_KEY_S) w_speed = -3.0;
-		if (key == GLFW_KEY_A) speed = 3.0;
-		if (key == GLFW_KEY_D) speed = -3.0;
+		if (key == GLFW_KEY_W) w_speed = 1.0;
+		if (key == GLFW_KEY_S) w_speed = -1.0;
+		if (key == GLFW_KEY_A) speed = 2.0;
+		if (key == GLFW_KEY_D) speed = -2.0;
 	}
 	if (action == GLFW_RELEASE) {
 		if (key == GLFW_KEY_LEFT) speed_x = 0;
@@ -127,7 +127,7 @@ void windowResizeCallback(GLFWwindow* window, int width, int height) {
 //Procedura inicjująca
 void initOpenGLProgram(GLFWwindow* window) {
 	//************Tutaj umieszczaj kod, który należy wykonać raz, na początku programu************
-	glClearColor(1, 1, 1, 1);
+	glClearColor(.2f, .2f, .2f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
 	glfwSetWindowSizeCallback(window, windowResizeCallback);
 	glfwSetKeyCallback(window, keyCallback);
@@ -169,6 +169,28 @@ void freeOpenGLProgram(GLFWwindow* window) {
 	delete sp;
 }
 
+glm::vec3 colision_detection(glm::vec3 position) {	// todo pass by reference
+	position = glm::vec3(glm::clamp(position.x, -20.0f, 20.0f), position.y,
+		glm::clamp(position.z, -24.0f, 50.0f));
+
+	if (position.x > -9 && position.x < 9 && position.z > -20 && position.z < -3.5) {
+		if (position.x < -8.5)
+			position.y = -14.0f + 2.0f * (8.5f + position.x);
+		else if (position.x > 8.5)
+			position.y = -14.0f + 2.0f * (8.5f - position.x);
+
+		else if (position.z > -4)
+			position.y = -14.0f - 2.0f * (4.0f + position.z);
+		else if (position.z < -19.5)
+			position.y = -14.0f + 2.0f * (19.5f + position.z);
+
+		else position.y = -14;
+	}
+	else position.y = -15;
+
+	return position;
+}
+
 
 //Procedura rysująca zawartość sceny
 void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position, float angle, float rotation) {
@@ -178,8 +200,7 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 	glm::vec3 direction = glm::vec3(sin(angle) * 5.0, 0.0f, cos(angle) * 5.0);
 	c_position = c_position + direction * position;
 
-	c_position = glm::vec3(glm::clamp(c_position.x, -20.0f, 20.0f), c_position.y,
-		glm::clamp(c_position.z, -24.0f, 50.0f));
+	c_position = colision_detection(c_position);
 
 	glm::mat4 V = glm::lookAt(
 		c_position,
