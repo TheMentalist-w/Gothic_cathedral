@@ -1,5 +1,4 @@
-﻿  lodepng.cpp
-  main_file.cpp
+﻿  main_file.cpp
 C:\Users\weron\Documents\Gothic_cathedral\cylinder2.h(284609,32): warning C4305: "inicjowanie": obcięcie z "double" do "float"
 C:\Users\weron\Documents\Gothic_cathedral\cylinder2.h(569214,27): warning C4305: "inicjowanie": obcięcie z "double" do "float"
 C:\Users\weron\Documents\Gothic_cathedral\cylinder2.h(853819,20): warning C4305: "inicjowanie": obcięcie z "double" do "float"
@@ -84,11 +83,12 @@ C:\Users\weron\Documents\Gothic_cathedral\circle500.h(2309,31): warning C4305: "
 C:\Users\weron\Documents\Gothic_cathedral\circle500.h(4614,38): warning C4305: "inicjowanie": obcięcie z "double" do "float"
 C:\Users\weron\Documents\Gothic_cathedral\circle500.h(6919,21): warning C4305: "inicjowanie": obcięcie z "double" do "float"
 C:\Users\weron\Documents\Gothic_cathedral\circle500.h(9224,19): warning C4305: "inicjowanie": obcięcie z "double" do "float"
-C:\Users\weron\Documents\Gothic_cathedral\main_file.cpp(918,22): warning C4244: "=": konwersja z "double" do "float", możliwa utrata danych
-C:\Users\weron\Documents\Gothic_cathedral\main_file.cpp(919,33): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
-C:\Users\weron\Documents\Gothic_cathedral\main_file.cpp(920,37): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
-  shaderprogram.cpp
-  Generowanie kodu...
-C:\Users\weron\Documents\Gothic_cathedral\main_file.cpp(921,37): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
-  LINK : nie znaleziono elementu C:\Users\weron\Documents\Gothic_cathedral\Debug\pl_szkielet_06_win.exe ani nie został on skompilowany podczas ostatniego konsolidowania przyrostowego; zostanie wykonana pełna konsolidacja
+C:\Users\weron\Documents\Gothic_cathedral\circleMesh.h(5765,35): warning C4305: "inicjowanie": obcięcie z "double" do "float"
+C:\Users\weron\Documents\Gothic_cathedral\circleMesh.h(11526,33): warning C4305: "inicjowanie": obcięcie z "double" do "float"
+C:\Users\weron\Documents\Gothic_cathedral\circleMesh.h(17287,22): warning C4305: "inicjowanie": obcięcie z "double" do "float"
+C:\Users\weron\Documents\Gothic_cathedral\main_file.cpp(952,22): warning C4244: "=": konwersja z "double" do "float", możliwa utrata danych
+C:\Users\weron\Documents\Gothic_cathedral\main_file.cpp(953,33): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
+C:\Users\weron\Documents\Gothic_cathedral\main_file.cpp(954,37): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
+C:\Users\weron\Documents\Gothic_cathedral\main_file.cpp(955,37): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
+C:\Users\weron\Documents\Gothic_cathedral\main_file.cpp(956,33): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
   pl_szkielet_06_win.vcxproj -> C:\Users\weron\Documents\Gothic_cathedral\Debug\pl_szkielet_06_win.exe

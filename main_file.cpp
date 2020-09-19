@@ -57,13 +57,14 @@ Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 #include "circle43.h"
 #include "circle3.h"
 #include "circle500.h"
+#include "circleMesh.h"
 
 float speed = 0;
 float w_speed = 0;
 float speed_x = 0;
 float speed_y = 0;
 float aspectRatio = 1;
-GLuint tex[26];
+GLuint tex[27];
 ShaderProgram* sp;
 glm::vec3 c_position = glm::vec3(0.0f, -15.0f, 0.0f);
 
@@ -158,6 +159,7 @@ void initOpenGLProgram(GLFWwindow* window) {
 	tex[23] = readTexture("TextureAtlasPlafond.png");
 	tex[24] = readTexture("TextureAtlasBanc.png");
 	tex[25] = readTexture("TextureAtlasArcheExt.png");
+	tex[26] = readTexture("graal.png");
 }
 
 //Zwolnienie zasobów zajętych przez program
@@ -169,7 +171,7 @@ void freeOpenGLProgram(GLFWwindow* window) {
 
 
 //Procedura rysująca zawartość sceny
-void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position, float angle) {
+void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position, float angle, float rotation) {
 	//************Tutaj umieszczaj kod rysujący obraz******************l
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -239,6 +241,7 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 
 	glDrawArrays(GL_TRIANGLES, 0, cylinder0VertexCount); //Draw
 
+
 	//plane014
 
 	glm::mat4 M014 = glm::mat4(1.0f);
@@ -302,6 +305,36 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 	glBindTexture(GL_TEXTURE_2D, tex[10]);
 
 	glDrawArrays(GL_TRIANGLES, 0, plane018VertexCount); //Draw
+
+
+
+	//circleMesh
+	//graal
+
+	glm::mat4 MCM = glm::mat4(1.0f);
+	MCM = glm::translate(MCM, glm::vec3(0.0f, -15.0f, -12.5f));
+	MCM = glm::rotate(MCM, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
+	MCM = glm::rotate(MCM, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	MCM = glm::rotate(MCM, 90.0f * PI / 180.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+	MCM = glm::rotate(MCM, rotation, glm::vec3(0.0f, 1.0f, 0.0f));
+	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(MCM));
+
+	glEnableVertexAttribArray(sp->a("vertex"));
+	glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, circleMeshVertices);
+
+	glEnableVertexAttribArray(sp->a("normal"));
+	glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, circleMeshNormals);
+
+	glEnableVertexAttribArray(sp->a("texCoord0"));
+	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, circleMeshTexCoords0);
+
+	glUniform1i(sp->u("textureMap0"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, tex[26]);
+
+	glDrawArrays(GL_TRIANGLES, 0, circleMeshVertexCount); //Draw
+
+
 
 
 	//circle3
@@ -912,6 +945,7 @@ int main(void)
 	float angle = 0;
 	float angle_x = 0; //Aktualny kąt obrotu obiektu
 	float angle_y = 0; //Aktualny kąt obrotu obiektu
+	float rotation = 0;
 	glfwSetTime(0); //Zeruj timer
 	while (!glfwWindowShouldClose(window)) //Tak długo jak okno nie powinno zostać zamknięte
 	{
@@ -919,8 +953,9 @@ int main(void)
 		angle += speed * glfwGetTime();
 		angle_x += speed_x * glfwGetTime(); //Zwiększ/zmniejsz kąt obrotu na podstawie prędkości i czasu jaki upłynał od poprzedniej klatki
 		angle_y += speed_y * glfwGetTime(); //Zwiększ/zmniejsz kąt obrotu na podstawie prędkości i czasu jaki upłynał od poprzedniej klatki
+		rotation += PI * glfwGetTime();
 		glfwSetTime(0); //Zeruj timer
-		drawScene(window, angle_x, angle_y, position, angle); //Wykonaj procedurę rysującą
+		drawScene(window, angle_x, angle_y, position, angle, rotation); //Wykonaj procedurę rysującą
 		glfwPollEvents(); //Wykonaj procedury callback w zalezności od zdarzeń jakie zaszły.
 	}
 

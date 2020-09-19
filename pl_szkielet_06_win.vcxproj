@@ -29,6 +29,7 @@
     <ClInclude Include="circle50.h" />
     <ClInclude Include="circle500.h" />
     <ClInclude Include="circle562.h" />
+    <ClInclude Include="circleMesh.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="cube10.h" />
     <ClInclude Include="cube3.h" />
