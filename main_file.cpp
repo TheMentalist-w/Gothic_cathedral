@@ -236,12 +236,12 @@ void colision_detection(glm::vec3& position, float& angle) {
 
 	for (int i = 0; i < 13 * 4; i += 4) {
 		if (position.x > bounds[i] && position.x < bounds[i + 1] && position.z > bounds[i + 2] && position.z < bounds[i + 3]) {
-			printf("%d: %.2f %.2f\t\t%.2f\t\t", i / 4, position.x, position.z, angle);
+			printf("%d/%.1f: %.2f %.2f\t\t%.2f\t\t", i / 4, bounds[i], position.x, position.z, angle);
 
-			if (angle > 0.785f && angle < 2.356f) position.x = bounds[i];
+			if (angle < 0.785f || angle > 5.5f) position.z = bounds[i + 2];
+			else if (angle < 2.356f) position.x = bounds[i];
 			else if (angle < 3.927f) position.z = bounds[i + 3];
-			else if (angle < 5.5f) position.x = bounds[i + 1];
-			else position.z = bounds[i + 2];
+			else position.x = bounds[i + 1];
 
 			printf("%.2f %.2f\n", position.x, position.z);
 		}
