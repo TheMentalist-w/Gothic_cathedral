@@ -58,13 +58,15 @@ Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 #include "circle3.h"
 #include "circle500.h"
 #include "circleMesh.h"
+#include "candle.h"
+#include "candlev1.h"
 
 float speed = 0;
 float w_speed = 0;
 float speed_x = 0;
 float speed_y = 0;
 float aspectRatio = 1;
-GLuint tex[27];
+GLuint tex[28];
 ShaderProgram* sp;
 glm::vec3 c_position = glm::vec3(0.0f, -15.0f, 0.0f);
 
@@ -183,12 +185,13 @@ void initOpenGLProgram(GLFWwindow* window) {
 	tex[24] = readTexture("TextureAtlasBanc.png");
 	tex[25] = readTexture("TextureAtlasArcheExt.png");
 	tex[26] = readTexture("graal.png");
+	tex[27] = readTexture("cANDLECOLOR.png");
 }
 
 //Zwolnienie zasobów zajętych przez program
 void freeOpenGLProgram(GLFWwindow* window) {
 	//************Tutaj umieszczaj kod, który należy wykonać po zakończeniu pętli głównej************
-	glDeleteTextures(27, tex);
+	glDeleteTextures(28, tex);
 	delete sp;
 }
 
@@ -211,12 +214,12 @@ float dist(glm::vec3& cam, glm::mat3& p) {
 void colision_detection(glm::vec3& position, float& angle) {
 	position = glm::vec3(glm::clamp(position.x, -21.0f, 21.0f), position.y,
 		glm::clamp(position.z, -26.0f, 50.0f));
-	/*if (position.z < 17.0f / 9 * position.x - 146.0f / 3) {
+	if (position.z < 17.0f / 9 * position.x - 146.0f / 3) {
 		position.x = (9.0f * position.z + 438.0f) / 17;
 	}
 	if (position.z < -17.0f / 8 * position.x - 429.0f / 8) {
 		position.z = -17.0f / 8 * position.x - 429.0f / 8;
-	}*/
+	}
 
 	if (position.x > -9 && position.x < 9 && position.z > -20 && position.z < -3.5) {
 		if (position.x < -8.5)
@@ -250,7 +253,7 @@ void colision_detection(glm::vec3& position, float& angle) {
 
 
 //Procedura rysująca zawartość sceny
-void drawScene(GLFWwindow* window, float& position, float& angle, float& rotation) {
+void drawScene(GLFWwindow* window, float position, float angle, float rotation, float *upDown) {
 	//************Tutaj umieszczaj kod rysujący obraz******************l
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -953,15 +956,15 @@ void drawScene(GLFWwindow* window, float& position, float& angle, float& rotatio
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[25]);
 
-	glDrawArrays(GL_TRIANGLES, 0, circle500VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, circle500VertexCount);
 
 
 	//circle44
 
 	glm::mat4 M44 = glm::mat4(1.0f);
 	M44 = glm::translate(M44, glm::vec3(0.0f, 14.3f, -8.0f));
-	M44 = glm::rotate(M44, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
-	M44 = glm::rotate(M44, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	M44 = glm::rotate(M44, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+	M44 = glm::rotate(M44, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M44));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -977,13 +980,80 @@ void drawScene(GLFWwindow* window, float& position, float& angle, float& rotatio
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[23]);
 
-	glDrawArrays(GL_TRIANGLES, 0, circle44VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, circle44VertexCount);
 
+	//
+	//TODO: add light source according to the position of candles
+	//
+	glm::vec3 candle_position = glm::vec3(0, 0, 0);
+	glm::vec3 flame_position = glm::vec3(0, 0, 0);
 
+	for (int i = 0; i < 4; i++) {
+		//candle
+		if (i == 0) {
+			candle_position = glm::vec3(-2.0f, -15.0f + upDown[i], -11.0f);
+			flame_position = glm::vec3(-2.0f, -15.2f + upDown[i], -11.0f);
+		}
+		else if (i == 1) {
+			candle_position = glm::vec3(2.0f, -15.0f + upDown[i], -11.0f);
+			flame_position = glm::vec3(2.0f, -15.2f + upDown[i], -11.0f);
+		}
+		else if (i == 2) {
+			candle_position = glm::vec3(-2.0f, -15.0f + upDown[i], -13.5f);
+			flame_position = glm::vec3(-2.0f, -15.2f + upDown[i], -13.5f);
+		}
+		else {
+			candle_position = glm::vec3(2.0f, -15.0f + upDown[i], -13.5f);
+			flame_position = glm::vec3(2.0f, -15.2f + upDown[i], -13.5f);
+		}
+		glm::mat4 MC = glm::mat4(1.0f);
+		MC = glm::translate(MC, candle_position);
+		MC = glm::scale(MC, glm::vec3(0.1f, 0.1f, 0.1f));
+		MC = glm::rotate(MC, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
+		MC = glm::rotate(MC, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+		glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(MC));
 
+		glEnableVertexAttribArray(sp->a("vertex"));
+		glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, candleVertices);
 
+		glEnableVertexAttribArray(sp->a("normal"));
+		glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, candleNormals);
 
+		glEnableVertexAttribArray(sp->a("texCoord0"));
+		glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, candleTexCoords0);
 
+		glUniform1i(sp->u("textureMap0"), 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, tex[27]);
+
+		glDrawArrays(GL_TRIANGLES, 0, candleVertexCount); //Draw
+
+		//flame
+		
+		glm::mat4 MCF = glm::mat4(1.0f);
+		MCF = glm::translate(MCF, flame_position);
+		MCF = glm::scale(MCF, glm::vec3(0.1f, 0.1f, 0.1f));
+		MCF = glm::rotate(MCF, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
+		MCF = glm::rotate(MCF, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+		glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(MCF));
+
+		glEnableVertexAttribArray(sp->a("vertex"));
+		glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, candlev1Vertices);
+
+		glEnableVertexAttribArray(sp->a("normal"));
+		glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, candlev1Normals);
+
+		glEnableVertexAttribArray(sp->a("texCoord0"));
+		glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, candlev1TexCoords0);
+
+		glUniform1i(sp->u("textureMap0"), 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, tex[27]);
+
+		glDrawArrays(GL_TRIANGLES, 0, candlev1VertexCount); //Draw
+	}
+	
+	
 	glDisableVertexAttribArray(sp->a("vertex"));  //Wyłącz przesyłanie danych do atrybutu vertex
 	glDisableVertexAttribArray(sp->a("normal"));  //Wyłącz przesyłanie danych do atrybutu normal
 	glDisableVertexAttribArray(sp->a("texCoord0"));  //Wyłącz przesyłanie danych do atrybutu normal
@@ -1025,19 +1095,22 @@ int main(void)
 	//Główna pętla
 	float position = 0;
 	float angle = 0;
-	float angle_x = 0; //Aktualny kąt obrotu obiektu
-	float angle_y = 0; //Aktualny kąt obrotu obiektu
 	float rotation = 0;
+	float upDown[4] = { 0, 0.5, 1, 1.5 };
+	float up_speed[4] = { 1.0, 1.0, 1.0, 1.0 };
 	glfwSetTime(0); //Zeruj timer
 	while (!glfwWindowShouldClose(window)) //Tak długo jak okno nie powinno zostać zamknięte
 	{
 		position = w_speed * glfwGetTime();
 		angle += speed * glfwGetTime();
-		angle_x += speed_x * glfwGetTime(); //Zwiększ/zmniejsz kąt obrotu na podstawie prędkości i czasu jaki upłynał od poprzedniej klatki
-		angle_y += speed_y * glfwGetTime(); //Zwiększ/zmniejsz kąt obrotu na podstawie prędkości i czasu jaki upłynał od poprzedniej klatki
 		rotation += PI * glfwGetTime();
+		for (int i = 0; i < 4; i++) {
+			if (upDown[i] >= 2) up_speed[i] = -1.0;
+			else if (upDown[i] <= 0) up_speed[i] = 1.0;
+			upDown[i] += up_speed[i] * glfwGetTime();
+		}
 		glfwSetTime(0); //Zeruj timer
-		drawScene(window, position, angle, rotation); //Wykonaj procedurę rysującą
+		drawScene(window, position, angle, rotation, upDown); //Wykonaj procedurę rysującą
 		glfwPollEvents(); //Wykonaj procedury callback w zalezności od zdarzeń jakie zaszły.
 	}
 
