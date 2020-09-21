@@ -188,7 +188,7 @@ void initOpenGLProgram(GLFWwindow* window) {
 //Zwolnienie zasobów zajętych przez program
 void freeOpenGLProgram(GLFWwindow* window) {
 	//************Tutaj umieszczaj kod, który należy wykonać po zakończeniu pętli głównej************
-
+	glDeleteTextures(27, tex);
 	delete sp;
 }
 
