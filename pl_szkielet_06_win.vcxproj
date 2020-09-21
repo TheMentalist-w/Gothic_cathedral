@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="candle.h" />
+    <ClInclude Include="candlev1.h" />
     <ClInclude Include="circle238.h" />
     <ClInclude Include="circle3.h" />
     <ClInclude Include="circle43.h" />
