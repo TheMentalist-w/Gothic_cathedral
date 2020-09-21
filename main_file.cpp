@@ -68,6 +68,27 @@ GLuint tex[27];
 ShaderProgram* sp;
 glm::vec3 c_position = glm::vec3(0.0f, -15.0f, 0.0f);
 
+const float bounds[] = { -3, 3, -14, -9,		// min x, max x, min z, max z
+
+	// altair columns
+	-9, -4, -20, -15.5,
+	4, 9, -20, -15.5,
+
+	// cols
+	9, 16, -11, -4,
+	-16, -9, -11, -4,
+	9, 16, 4, 11,
+	-16, -9, 4, 11,
+	9, 16, 19.5, 27,
+	-16, -9, 19.5, 27,
+	9, 16, 35.5, 43,
+
+	// benches
+	1, 11, 2, 25,
+	-11, -1, 2, 25
+
+};
+
 //Procedura obsługi błędów
 void error_callback(int error, const char* description) {
 	fputs(description, stderr);
@@ -107,6 +128,8 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 		if (key == GLFW_KEY_S) w_speed = -1.0;
 		if (key == GLFW_KEY_A) speed = 2.0;
 		if (key == GLFW_KEY_D) speed = -2.0;
+
+		if (key == GLFW_KEY_E) printf("x: %.3f   y: %.3f   z: %.3f\n", c_position.x, c_position.y, c_position.z);
 	}
 	if (action == GLFW_RELEASE) {
 		if (key == GLFW_KEY_LEFT) speed_x = 0;
@@ -169,9 +192,31 @@ void freeOpenGLProgram(GLFWwindow* window) {
 	delete sp;
 }
 
-glm::vec3 colision_detection(glm::vec3 position) {	// todo pass by reference
-	position = glm::vec3(glm::clamp(position.x, -20.0f, 20.0f), position.y,
-		glm::clamp(position.z, -24.0f, 50.0f));
+float dist(glm::vec3& cam, glm::mat3& p) {
+	// camera position, polygon
+
+	// calc normal
+	glm::vec3 norm = glm::normalize(glm::cross(p[1] - p[0], p[2] - p[0]));
+
+	// D = -P dot N
+	float d = glm::dot(glm::vec3(-(p[0].x + p[1].x + p[2].x) / 3, -(p[0].y + p[1].y + p[2].y) / 3, -(p[0].z + p[1].z + p[2].z) / 3),
+		norm);
+
+	if (glm::abs(norm.z) > .1f) printf(".");
+
+	// calc distance
+	return glm::abs(glm::dot(cam, norm) + d);
+}
+
+void colision_detection(glm::vec3& position, float& angle) {
+	position = glm::vec3(glm::clamp(position.x, -21.0f, 21.0f), position.y,
+		glm::clamp(position.z, -26.0f, 50.0f));
+	/*if (position.z < 17.0f / 9 * position.x - 146.0f / 3) {
+		position.x = (9.0f * position.z + 438.0f) / 17;
+	}
+	if (position.z < -17.0f / 8 * position.x - 429.0f / 8) {
+		position.z = -17.0f / 8 * position.x - 429.0f / 8;
+	}*/
 
 	if (position.x > -9 && position.x < 9 && position.z > -20 && position.z < -3.5) {
 		if (position.x < -8.5)
@@ -188,19 +233,34 @@ glm::vec3 colision_detection(glm::vec3 position) {	// todo pass by reference
 	}
 	else position.y = -15;
 
-	return position;
+
+	for (int i = 0; i < 13 * 4; i += 4) {
+		if (position.x > bounds[i] && position.x < bounds[i + 1] && position.z > bounds[i + 2] && position.z < bounds[i + 3]) {
+			printf("%d: %.2f %.2f\t\t%.2f\t\t", i / 4, position.x, position.z, angle);
+
+			if (angle > 0.785f && angle < 2.356f) position.x = bounds[i];
+			else if (angle < 3.927f) position.z = bounds[i + 3];
+			else if (angle < 5.5f) position.x = bounds[i + 1];
+			else position.z = bounds[i + 2];
+
+			printf("%.2f %.2f\n", position.x, position.z);
+		}
+	}
 }
 
 
 //Procedura rysująca zawartość sceny
-void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position, float angle, float rotation) {
+void drawScene(GLFWwindow* window, float& position, float& angle, float& rotation) {
 	//************Tutaj umieszczaj kod rysujący obraz******************l
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	if (angle < 0) angle += 2.0f * PI;
+	if (angle > 2 * PI) angle -= 2.0f * PI;
 
 	glm::vec3 direction = glm::vec3(sin(angle) * 5.0, 0.0f, cos(angle) * 5.0);
 	c_position = c_position + direction * position;
 
-	c_position = colision_detection(c_position);
+	colision_detection(c_position, angle);
 
 	glm::mat4 V = glm::lookAt(
 		c_position,
@@ -751,6 +811,7 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y, float position,
 
 
 	//cube3
+	// entree
 
 	glm::mat4 M3 = glm::mat4(1.0f);
 	M3 = glm::translate(M3, glm::vec3(0.0f, 15.5f, 5.0f));
@@ -976,7 +1037,7 @@ int main(void)
 		angle_y += speed_y * glfwGetTime(); //Zwiększ/zmniejsz kąt obrotu na podstawie prędkości i czasu jaki upłynał od poprzedniej klatki
 		rotation += PI * glfwGetTime();
 		glfwSetTime(0); //Zeruj timer
-		drawScene(window, angle_x, angle_y, position, angle, rotation); //Wykonaj procedurę rysującą
+		drawScene(window, position, angle, rotation); //Wykonaj procedurę rysującą
 		glfwPollEvents(); //Wykonaj procedury callback w zalezności od zdarzeń jakie zaszły.
 	}
 
