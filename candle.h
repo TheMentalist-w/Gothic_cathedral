@@ -17611,4 +17611,4 @@ float candleTexCoords0[] = { 0.507825, 0.503931,
 0.63568, 0.700158,
 0.636905, 0.67334 };
 
-#endif // MYCUBE_H_INCLUDED
+#endif // CANDLE_H_INCLUDED

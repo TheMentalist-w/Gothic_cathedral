@@ -1735,4 +1735,4 @@ float candlev1TexCoords0[] = { 0.585215, 0.356542,
 0.201984, 0.844272,
 0.146271, 0.817545 };
 
-#endif // MYCUBE_H_INCLUDED
+#endif // CANDLEV1_H_INCLUDED

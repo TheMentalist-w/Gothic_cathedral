@@ -63,8 +63,6 @@ Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 
 float speed = 0;
 float w_speed = 0;
-float speed_x = 0;
-float speed_y = 0;
 float aspectRatio = 1;
 GLuint tex[28];
 ShaderProgram* sp;
@@ -131,10 +129,6 @@ GLuint readTexture(const char* filename) {
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (action == GLFW_PRESS) {
-		if (key == GLFW_KEY_LEFT) speed_x = -PI / 2;
-		if (key == GLFW_KEY_RIGHT) speed_x = PI / 2;
-		if (key == GLFW_KEY_UP) speed_y = PI / 2;
-		if (key == GLFW_KEY_DOWN) speed_y = -PI / 2;
 		if (key == GLFW_KEY_W) w_speed = 1.0;
 		if (key == GLFW_KEY_S) w_speed = -1.0;
 		if (key == GLFW_KEY_A) speed = 2.0;
@@ -143,10 +137,6 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 		// if (key == GLFW_KEY_E) printf("x: %.3f   y: %.3f   z: %.3f\n", c_position.x, c_position.y, c_position.z);
 	}
 	if (action == GLFW_RELEASE) {
-		if (key == GLFW_KEY_LEFT) speed_x = 0;
-		if (key == GLFW_KEY_RIGHT) speed_x = 0;
-		if (key == GLFW_KEY_UP) speed_y = 0;
-		if (key == GLFW_KEY_DOWN) speed_y = 0;
 		if (key == GLFW_KEY_A || key == GLFW_KEY_D) speed = 0.0;
 		if (key == GLFW_KEY_W || key == GLFW_KEY_S) w_speed = 0.0;
 	}
@@ -309,12 +299,13 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 
 
 	//Drawing elements
+	//cylinder2
 	//Columns
 
 	glm::mat4 M = glm::mat4(1.0f);
 	M = glm::translate(M, glm::vec3(0.0f, 20.0f, 0.0f));
-	M = glm::rotate(M, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
-	M = glm::rotate(M, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	M = glm::rotate(M, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+	M = glm::rotate(M, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -330,9 +321,10 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[15]);
 
-	glDrawArrays(GL_TRIANGLES, 0, cylinder2VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, cylinder2VertexCount);
 
 
+	//cylinder0
 	//Columns pedestals
 
 	glm::mat4 MC0 = M;
@@ -351,15 +343,16 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[12]);
 
-	glDrawArrays(GL_TRIANGLES, 0, cylinder0VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, cylinder0VertexCount);
 
 
 	//plane014
+	//chancel
 
 	glm::mat4 M014 = glm::mat4(1.0f);
 	M014 = glm::translate(M014, glm::vec3(0.0f, -17.0f, -12.5f));
-	M014 = glm::rotate(M014, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
-	M014 = glm::rotate(M014, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	M014 = glm::rotate(M014, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+	M014 = glm::rotate(M014, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M014));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -375,10 +368,11 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[13]);
 
-	glDrawArrays(GL_TRIANGLES, 0, plane014VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, plane014VertexCount);
 
 
 	//plane014v1
+	//chancelv1
 
 	glm::mat4 M014V1 = M014;
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M014V1));
@@ -396,9 +390,10 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[13]);
 
-	glDrawArrays(GL_TRIANGLES, 0, plane014v1VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, plane014v1VertexCount);
 
 	//plane18
+	//altar
 
 	glm::mat4 MP18 = M014;
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(MP18));
@@ -416,7 +411,7 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[10]);
 
-	glDrawArrays(GL_TRIANGLES, 0, plane018VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, plane018VertexCount);
 
 
 
@@ -425,8 +420,8 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 
 	glm::mat4 MCM = glm::mat4(1.0f);
 	MCM = glm::translate(MCM, glm::vec3(0.0f, -15.0f, -12.5f));
-	MCM = glm::rotate(MCM, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
-	MCM = glm::rotate(MCM, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	MCM = glm::rotate(MCM, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+	MCM = glm::rotate(MCM, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	MCM = glm::rotate(MCM, 90.0f * PI / 180.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 	MCM = glm::rotate(MCM, rotation, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(MCM));
@@ -444,18 +439,17 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[26]);
 
-	glDrawArrays(GL_TRIANGLES, 0, circleMeshVertexCount); //Draw
-
-
+	glDrawArrays(GL_TRIANGLES, 0, circleMeshVertexCount);
 
 
 	//circle3
+	//altar columns
 
 	glm::mat4 MC3 = glm::mat4(1.0f);
 	MC3 = glm::translate(MC3, glm::vec3(0.0f, -17.3f, -12.5f));
 	MC3 = glm::scale(MC3, glm::vec3(0.135f, 0.135f, 0.135f));
-	MC3 = glm::rotate(MC3, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
-	MC3 = glm::rotate(MC3, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	MC3 = glm::rotate(MC3, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+	MC3 = glm::rotate(MC3, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(MC3));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -471,7 +465,7 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[11]);
 
-	glDrawArrays(GL_TRIANGLES, 0, circle3VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, circle3VertexCount);
 
 
 	//circle48
@@ -479,8 +473,8 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 
 	glm::mat4 M48 = glm::mat4(1.0f);
 	M48 = glm::translate(M48, glm::vec3(0.0f, 15.0f, -7.8f));
-	M48 = glm::rotate(M48, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
-	M48 = glm::rotate(M48, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	M48 = glm::rotate(M48, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+	M48 = glm::rotate(M48, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M48));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -496,16 +490,17 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[16]);
 
-	glDrawArrays(GL_TRIANGLES, 0, circle48VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, circle48VertexCount);
 
 
 	//plane3
+	//benches
 
 	glm::mat4 MP3 = glm::mat4(1.0f);
 	MP3 = glm::translate(MP3, glm::vec3(0.0f, 14.5f, 0.0f));
 	MP3 = glm::scale(MP3, glm::vec3(0.55f, 0.55f, 0.55f));
-	MP3 = glm::rotate(MP3, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
-	MP3 = glm::rotate(MP3, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	MP3 = glm::rotate(MP3, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+	MP3 = glm::rotate(MP3, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(MP3));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -521,7 +516,7 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[24]);
 
-	glDrawArrays(GL_TRIANGLES, 0, plane3VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, plane3VertexCount);
 
 
 	//circle43
@@ -529,8 +524,8 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 
 	glm::mat4 M43 = glm::mat4(1.0f);
 	M43 = glm::translate(M43, glm::vec3(0.0f, 15.6f, -8.0f));
-	M43 = glm::rotate(M43, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
-	M43 = glm::rotate(M43, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	M43 = glm::rotate(M43, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+	M43 = glm::rotate(M43, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M43));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -546,7 +541,7 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[19]);
 
-	glDrawArrays(GL_TRIANGLES, 0, circle43VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, circle43VertexCount);
 
 	//circle50
 	// arcs between columns - lower part
@@ -567,15 +562,16 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[20]);
 
-	glDrawArrays(GL_TRIANGLES, 0, circle50VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, circle50VertexCount);
 
 
 	//circle45
+	//short columns on the outside
 
 	glm::mat4 M45 = glm::mat4(1.0f);
 	M45 = glm::translate(M45, glm::vec3(0.1f, 15.0f, -8.0f));
-	M45 = glm::rotate(M45, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
-	M45 = glm::rotate(M45, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	M45 = glm::rotate(M45, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+	M45 = glm::rotate(M45, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M45));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -591,16 +587,16 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[14]);
 
-	glDrawArrays(GL_TRIANGLES, 0, circle45VertexCount); //Draw
-
+	glDrawArrays(GL_TRIANGLES, 0, circle45VertexCount);
 
 
 	//circle46
+	//lower walls
 
 	glm::mat4 M46 = glm::mat4(1.0f);
 	M46 = glm::translate(M46, glm::vec3(18.5f, -9.5f, -18.5f));
-	M46 = glm::rotate(M46, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
-	M46 = glm::rotate(M46, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	M46 = glm::rotate(M46, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+	M46 = glm::rotate(M46, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M46));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -616,15 +612,16 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[18]);
 
-	glDrawArrays(GL_TRIANGLES, 0, circle46VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, circle46VertexCount);
 
 
 	//stainedGlass8
+	//lower windows
 
 	glm::mat4 MS8 = glm::mat4(1.0f);
 	MS8 = glm::translate(MS8, glm::vec3(0.0f, 24.0f, -0.2f));
-	MS8 = glm::rotate(MS8, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
-	MS8 = glm::rotate(MS8, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	MS8 = glm::rotate(MS8, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+	MS8 = glm::rotate(MS8, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(MS8));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -640,7 +637,7 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[4]);
 
-	glDrawArrays(GL_TRIANGLES, 0, stainedGlass8VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, stainedGlass8VertexCount);
 
 
 	//stainedGlass5
@@ -648,8 +645,8 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glm::mat4 MS5 = glm::mat4(1.0f);
 	MS5 = glm::translate(MS5, glm::vec3(-19.0f, -10.0f, -19.0f));
 	MS5 = glm::scale(MS5, glm::vec3(12.0f, 12.0f, 12.0f));
-	MS5 = glm::rotate(MS5, PI, glm::vec3(1.0f, 0.0f, 0.0f)); //Wylicz macierz modelu
-	MS5 = glm::rotate(MS5, -60.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	MS5 = glm::rotate(MS5, PI, glm::vec3(1.0f, 0.0f, 0.0f));
+	MS5 = glm::rotate(MS5, -60.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(MS5));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -665,7 +662,7 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[2]);
 
-	glDrawArrays(GL_TRIANGLES, 0, stainedGlass5VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, stainedGlass5VertexCount);
 
 
 	//stainedGlass3
@@ -673,8 +670,8 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glm::mat4 MS3 = glm::mat4(1.0f);
 	MS3 = glm::translate(MS3, glm::vec3(0.0f, 11.0f, -20.0f));
 	MS3 = glm::scale(MS3, glm::vec3(18.0f, 18.0f, 18.0f));
-	MS3 = glm::rotate(MS3, PI, glm::vec3(1.0f, 0.0f, 0.0f)); //Wylicz macierz modelu
-	MS3 = glm::rotate(MS3, PI, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	MS3 = glm::rotate(MS3, PI, glm::vec3(1.0f, 0.0f, 0.0f));
+	MS3 = glm::rotate(MS3, PI, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(MS3));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -690,7 +687,7 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[5]);
 
-	glDrawArrays(GL_TRIANGLES, 0, stainedGlass3VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, stainedGlass3VertexCount);
 
 
 	//stainedGlass1
@@ -698,8 +695,8 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glm::mat4 MS1 = glm::mat4(1.0f);
 	MS1 = glm::translate(MS1, glm::vec3(-13.5f, 10.0f, 0.0f));
 	MS1 = glm::scale(MS1, glm::vec3(16.5f, 16.5f, 16.5f));
-	MS1 = glm::rotate(MS1, PI, glm::vec3(1.0f, 0.0f, 0.0f)); //Wylicz macierz modelu
-	MS1 = glm::rotate(MS1, -90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	MS1 = glm::rotate(MS1, PI, glm::vec3(1.0f, 0.0f, 0.0f));
+	MS1 = glm::rotate(MS1, -90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(MS1));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -715,7 +712,7 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[8]);
 
-	glDrawArrays(GL_TRIANGLES, 0, stainedGlass1VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, stainedGlass1VertexCount);
 
 
 
@@ -724,8 +721,8 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glm::mat4 MS2 = glm::mat4(1.0f);
 	MS2 = glm::translate(MS2, glm::vec3(13.5f, 10.0f, 47.0f));
 	MS2 = glm::scale(MS2, glm::vec3(17.5f, 17.5f, 17.5f));
-	MS2 = glm::rotate(MS2, PI, glm::vec3(1.0f, 0.0f, 0.0f)); //Wylicz macierz modelu
-	MS2 = glm::rotate(MS2, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	MS2 = glm::rotate(MS2, PI, glm::vec3(1.0f, 0.0f, 0.0f));
+	MS2 = glm::rotate(MS2, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(MS2));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -741,7 +738,7 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[6]);
 
-	glDrawArrays(GL_TRIANGLES, 0, stainedGlass2VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, stainedGlass2VertexCount);
 
 
 	//stainedGlass4
@@ -749,8 +746,8 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glm::mat4 MS4 = glm::mat4(1.0f);
 	MS4 = glm::translate(MS4, glm::vec3(10.0f, 10.0f, -13.5f));
 	MS4 = glm::scale(MS4, glm::vec3(17.0f, 17.0f, 17.0f));
-	MS4 = glm::rotate(MS4, PI, glm::vec3(1.0f, 0.0f, 0.0f)); //Wylicz macierz modelu
-	MS4 = glm::rotate(MS4, 60.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	MS4 = glm::rotate(MS4, PI, glm::vec3(1.0f, 0.0f, 0.0f));
+	MS4 = glm::rotate(MS4, 60.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(MS4));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -766,15 +763,15 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[7]);
 
-	glDrawArrays(GL_TRIANGLES, 0, stainedGlass4VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, stainedGlass4VertexCount);
 
 	//stainedGlass4v1
 
 	glm::mat4 MS4v1 = glm::mat4(1.0f);
 	MS4v1 = glm::translate(MS4v1, glm::vec3(-10.0f, 10.0f, -13.5f));
 	MS4v1 = glm::scale(MS4v1, glm::vec3(17.0f, 17.0f, 17.0f));
-	MS4v1 = glm::rotate(MS4v1, PI, glm::vec3(1.0f, 0.0f, 0.0f)); //Wylicz macierz modelu
-	MS4v1 = glm::rotate(MS4v1, -60.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	MS4v1 = glm::rotate(MS4v1, PI, glm::vec3(1.0f, 0.0f, 0.0f)); 
+	MS4v1 = glm::rotate(MS4v1, -60.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(MS4v1));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -790,7 +787,7 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[7]);
 
-	glDrawArrays(GL_TRIANGLES, 0, stainedGlass4VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, stainedGlass4VertexCount);
 
 
 	//stainedGlass7
@@ -798,8 +795,8 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glm::mat4 MS7 = glm::mat4(1.0f);
 	MS7 = glm::translate(MS7, glm::vec3(19.0f, -10.0f, -18.9f));
 	MS7 = glm::scale(MS7, glm::vec3(12.0f, 12.0f, 12.0f));
-	MS7 = glm::rotate(MS7, PI, glm::vec3(1.0f, 0.0f, 0.0f)); //Wylicz macierz modelu
-	MS7 = glm::rotate(MS7, 60.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	MS7 = glm::rotate(MS7, PI, glm::vec3(1.0f, 0.0f, 0.0f));
+	MS7 = glm::rotate(MS7, 60.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(MS7));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -815,14 +812,15 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[3]);
 
-	glDrawArrays(GL_TRIANGLES, 0, stainedGlass7VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, stainedGlass7VertexCount);
+
 
 	//stainedGlass6
 
 	glm::mat4 MS6 = glm::mat4(1.0f);
 	MS6 = glm::translate(MS6, glm::vec3(0.3f, -10.0f, -30.0f));
 	MS6 = glm::scale(MS6, glm::vec3(12.0f, 12.0f, 12.0f));
-	MS6 = glm::rotate(MS6, PI, glm::vec3(1.0f, 0.0f, 0.0f)); //Wylicz macierz modelu
+	MS6 = glm::rotate(MS6, PI, glm::vec3(1.0f, 0.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(MS6));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -838,7 +836,7 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[1]);
 
-	glDrawArrays(GL_TRIANGLES, 0, stainedGlass6VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, stainedGlass6VertexCount);
 
 
 	//cube3
@@ -846,8 +844,8 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 
 	glm::mat4 M3 = glm::mat4(1.0f);
 	M3 = glm::translate(M3, glm::vec3(0.0f, 15.5f, 5.0f));
-	M3 = glm::rotate(M3, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
-	M3 = glm::rotate(M3, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	M3 = glm::rotate(M3, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+	M3 = glm::rotate(M3, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M3));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -863,7 +861,7 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[9]);
 
-	glDrawArrays(GL_TRIANGLES, 0, cube3VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, cube3VertexCount);
 
 
 	//doors
@@ -886,15 +884,16 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[17]);
 
-	glDrawArrays(GL_TRIANGLES, 0, doorsVertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, doorsVertexCount);
 
 
 	//circle562
+	//upper walls
 
 	glm::mat4 M562 = glm::mat4(1.0f);
 	M562 = glm::translate(M562, glm::vec3(0.0f, 16.5f, -19.3f));
-	M562 = glm::rotate(M562, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
-	M562 = glm::rotate(M562, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	M562 = glm::rotate(M562, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+	M562 = glm::rotate(M562, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M562));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -910,16 +909,17 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[21]);
 
-	glDrawArrays(GL_TRIANGLES, 0, circle562VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, circle562VertexCount);
 
 
 
 	//Cube10
+	//ledge
 
 	glm::mat4 M10 = glm::mat4(1.0f);
 	M10 = glm::translate(M10, glm::vec3(0.0f, 15.8f, 5.0f));
-	M10 = glm::rotate(M10, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
-	M10 = glm::rotate(M10, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	M10 = glm::rotate(M10, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+	M10 = glm::rotate(M10, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M10));
 
@@ -936,15 +936,16 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[22]);
 
-	glDrawArrays(GL_TRIANGLES, 0, cube10VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, cube10VertexCount);
 
 
 	//Circle238
+	//ribs
 
 	glm::mat4 M238 = glm::mat4(1.0f);
 	M238 = glm::translate(M238, glm::vec3(0.1f, -9.8f, -29.0f));
-	M238 = glm::rotate(M238, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
-	M238 = glm::rotate(M238, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	M238 = glm::rotate(M238, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+	M238 = glm::rotate(M238, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M238));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -960,15 +961,16 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex[25]);
 
-	glDrawArrays(GL_TRIANGLES, 0, circle238VertexCount); //Draw
+	glDrawArrays(GL_TRIANGLES, 0, circle238VertexCount);
 
 
 	//circle500
+	//ribs above altar
 
 	glm::mat4 M500 = glm::mat4(1.0f);
 	M500 = glm::translate(M500, glm::vec3(-9.2f, 14.5f, -13.3f));
-	M500 = glm::rotate(M500, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
-	M500 = glm::rotate(M500, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+	M500 = glm::rotate(M500, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+	M500 = glm::rotate(M500, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M500));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -988,6 +990,7 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 
 
 	//circle44
+	//ceiling
 
 	glm::mat4 M44 = glm::mat4(1.0f);
 	M44 = glm::translate(M44, glm::vec3(0.0f, 14.3f, -8.0f));
@@ -1010,14 +1013,12 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 
 	glDrawArrays(GL_TRIANGLES, 0, circle44VertexCount);
 
-	//
-	//TODO: add light source according to the position of candles
-	//
+	//floating candles
+
 	glm::vec3 candle_position = glm::vec3(0, 0, 0);
 	glm::vec3 flame_position = glm::vec3(0, 0, 0);
 
 	for (int i = 0; i < 4; i++) {
-		//candle
 		if (i == 0) {
 			candle_position = glm::vec3(-2.0f, -15.0f + upDown[i], -11.0f);
 			flame_position = glm::vec3(-2.0f, -15.2f + upDown[i], -11.0f);
@@ -1034,11 +1035,14 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 			candle_position = glm::vec3(2.0f, -15.0f + upDown[i], -13.5f);
 			flame_position = glm::vec3(2.0f, -15.2f + upDown[i], -13.5f);
 		}
+
+		//candle
+
 		glm::mat4 MC = glm::mat4(1.0f);
 		MC = glm::translate(MC, candle_position);
 		MC = glm::scale(MC, glm::vec3(0.1f, 0.1f, 0.1f));
-		MC = glm::rotate(MC, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
-		MC = glm::rotate(MC, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+		MC = glm::rotate(MC, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+		MC = glm::rotate(MC, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(MC));
 
 		glEnableVertexAttribArray(sp->a("vertex"));
@@ -1054,15 +1058,15 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, tex[27]);
 
-		glDrawArrays(GL_TRIANGLES, 0, candleVertexCount); //Draw
+		glDrawArrays(GL_TRIANGLES, 0, candleVertexCount);
 
-		//flame
+		//candlev1
 		
 		glm::mat4 MCF = glm::mat4(1.0f);
 		MCF = glm::translate(MCF, flame_position);
 		MCF = glm::scale(MCF, glm::vec3(0.1f, 0.1f, 0.1f));
-		MCF = glm::rotate(MCF, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)); //Wylicz macierz modelu
-		MCF = glm::rotate(MCF, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz modelu
+		MCF = glm::rotate(MCF, 90.0f * PI / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+		MCF = glm::rotate(MCF, 90.0f * PI / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(MCF));
 
 		glEnableVertexAttribArray(sp->a("vertex"));
@@ -1078,7 +1082,7 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, tex[27]);
 
-		glDrawArrays(GL_TRIANGLES, 0, candlev1VertexCount); //Draw
+		glDrawArrays(GL_TRIANGLES, 0, candlev1VertexCount);
 	}
 	
 	

@@ -21,8 +21,8 @@ out vec4 v;
 out vec2 iTexCoord0;
 
 void main(void) {
-	vec4 lpo = vec4(1.5, 0, 0, 1); // w przestrzeni oka (pochodnia)
-	vec4 lp = vec4(-17, -16, -0.2, 1); // graal
+	vec4 lpo = vec4(1.5, 0, 0, 1); // pochodnia
+	vec4 lp = vec4(-17, -16, -0.2, 1); // o³tarz
 	lo = normalize(lpo - V * M * vertex);
 	l = normalize(V * M * lp - V * M * vertex);
 	n = normalize(vec4(0, 0, 0, 1) - V * M * vertex);
