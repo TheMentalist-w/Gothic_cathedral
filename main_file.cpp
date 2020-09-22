@@ -70,7 +70,13 @@ GLuint tex[28];
 ShaderProgram* sp;
 glm::vec3 c_position = glm::vec3(0.0f, -15.0f, 0.0f);
 
-const float bounds[] = { -3, 3, -14, -9,		// min x, max x, min z, max z
+const float bounds[] = { // min x, max x, min z, max z
+	/*-22.0f, -21.0f, -30.0f, 55.0f,
+	21.0f, 22.0f, -30.0f, 55.0f,
+	-25.0f, 25.0f, 53.0f, 54.0f,
+	-25.0f, 25.0f, -27.0f, -26.0f,*/
+	
+	-3, 3, -14, -9,		
 
 	// altair columns
 	-9.5, -4, -21, -15.5,
@@ -90,8 +96,8 @@ const float bounds[] = { -3, 3, -14, -9,		// min x, max x, min z, max z
 	1, 11, 2, 25,
 	-11, -1, 2, 25,
 
-	-14, -11, 50, 55,
-	11, 14, 50, 55
+	-14, -11, 52.5f, 55,
+	11, 14, 52.5f, 55
 };
 
 //Procedura obsługi błędów
@@ -134,7 +140,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 		if (key == GLFW_KEY_A) speed = 2.0;
 		if (key == GLFW_KEY_D) speed = -2.0;
 
-		if (key == GLFW_KEY_E) printf("x: %.3f   y: %.3f   z: %.3f\n", c_position.x, c_position.y, c_position.z);
+		// if (key == GLFW_KEY_E) printf("x: %.3f   y: %.3f   z: %.3f\n", c_position.x, c_position.y, c_position.z);
 	}
 	if (action == GLFW_RELEASE) {
 		if (key == GLFW_KEY_LEFT) speed_x = 0;
@@ -198,30 +204,16 @@ void freeOpenGLProgram(GLFWwindow* window) {
 	delete sp;
 }
 
-float dist(glm::vec3& cam, glm::mat3& p) {
-	// camera position, polygon
-
-	// calc normal
-	glm::vec3 norm = glm::normalize(glm::cross(p[1] - p[0], p[2] - p[0]));
-
-	// D = -P dot N
-	float d = glm::dot(glm::vec3(-(p[0].x + p[1].x + p[2].x) / 3, -(p[0].y + p[1].y + p[2].y) / 3, -(p[0].z + p[1].z + p[2].z) / 3),
-		norm);
-
-	if (glm::abs(norm.z) > .1f) printf(".");
-
-	// calc distance
-	return glm::abs(glm::dot(cam, norm) + d);
-}
-
 void colision_detection(glm::vec3& position, float& angle) {
 	position = glm::vec3(glm::clamp(position.x, -21.0f, 21.0f), position.y,
 		glm::clamp(position.z, -26.0f, 53.0f));
 	if (position.z < 17.0f / 9 * position.x - 146.0f / 3) {
 		position.x = (9.0f * position.z + 438.0f) / 17;
+		// -9.0f / 17
 	}
 	if (position.z < -17.0f / 8 * position.x - 429.0f / 8) {
 		position.z = -17.0f / 8 * position.x - 429.0f / 8;
+		// 8.0f / 17
 	}
 
 	if (position.x > -9 && position.x < 9 && position.z > -20 && position.z < -3.5) {
@@ -242,42 +234,35 @@ void colision_detection(glm::vec3& position, float& angle) {
 
 	for (int i = 0; i < 15 * 4; i += 4) {
 		if (position.x > bounds[i] && position.x < bounds[i + 1] && position.z > bounds[i + 2] && position.z < bounds[i + 3]) {
-			printf("%d/%.1f: %.2f %.2f\t\t%.2f\t", i / 4, bounds[i], position.x, position.z, angle);
-			if (abs(cos(angle)) > 0.01f) {
-				if (abs(sin(angle)) < 0.01f) {	// perpendicular to an edge
-					printf(" s0 ");
+			if (abs(cos(angle)) > 0.005f) {
+				if (abs(sin(angle)) < 0.005f) {	// perpendicular to an edge
 					if (cos(angle) > 0)
 						position.z = bounds[i + 2];
 					else
 						position.z = bounds[i + 3];
-					printf("%.2f %.2f\n", position.x, position.z);
 					continue;
 				}
 				// possible to calc. tangent
 				float coef_dir = tan(angle);
 				if (sin(angle) > 0 && cos(angle) > 0) {
-					printf(" ++ ");
 					if ((position.x - coef_dir * position.z) < (bounds[i] - coef_dir * bounds[i + 2]))
 						position.x = bounds[i];
 					else
 						position.z = bounds[i + 2];
 				}
 				else if (sin(angle) > 0 && cos(angle) < 0) {
-					printf(" +- ");
 					if ((position.x - coef_dir * position.z) < (bounds[i] - coef_dir * bounds[i + 3]))
 						position.x = bounds[i];
 					else
 						position.z = bounds[i + 3];
 				}
 				else if (sin(angle) < 0 && cos(angle) > 0) {
-					printf(" -+ ");
 					if ((position.x - coef_dir * position.z) > (bounds[i + 1] - coef_dir * bounds[i + 2]))
 						position.x = bounds[i + 1];
 					else
 						position.z = bounds[i + 2];
 				}
 				else {		// if (sin(angle) < 0 && cos(angle) < 0)
-					printf(" -- ");
 					if ((position.x - coef_dir * position.z) > (bounds[i + 1] - coef_dir * bounds[i + 3]))
 						position.x = bounds[i + 1];
 					else
@@ -285,28 +270,13 @@ void colision_detection(glm::vec3& position, float& angle) {
 				}
 			}
 			else {
-				printf(" c0 ");
 				if (sin(angle) > 0)
 					position.x = bounds[i];
 				else
 					position.x = bounds[i + 1];
 			}
-			printf("%.2f %.2f\n", position.x, position.z);
 		}
 	}
-
-	//for (int i = 0; i < 13 * 4; i += 4) {
-	//	if (position.x > bounds[i] && position.x < bounds[i + 1] && position.z > bounds[i + 2] && position.z < bounds[i + 3]) {
-	//		printf("%d/%.1f: %.2f %.2f\t\t%.2f\t\t", i / 4, bounds[i], position.x, position.z, angle);
-
-	//		if (angle < 0.785f || angle > 5.5f) position.z = bounds[i + 2];
-	//		else if (angle < 2.356f) position.x = bounds[i];
-	//		else if (angle < 3.927f) position.z = bounds[i + 3];
-	//		else position.x = bounds[i + 1];
-
-	//		printf("%.2f %.2f\n", position.x, position.z);
-	//	}
-	//}
 }
 
 
