@@ -73,22 +73,25 @@ glm::vec3 c_position = glm::vec3(0.0f, -15.0f, 0.0f);
 const float bounds[] = { -3, 3, -14, -9,		// min x, max x, min z, max z
 
 	// altair columns
-	-9, -4, -20, -15.5,
-	4, 9, -20, -15.5,
+	-9.5, -4, -21, -15.5,
+	4, 9.5, -21, -15.5,
 
 	// cols
-	9, 16, -11, -4,
-	-16, -9, -11, -4,
-	9, 16, 4, 11,
-	-16, -9, 4, 11,
-	9, 16, 19.5, 27,
-	-16, -9, 19.5, 27,
-	9, 16, 35.5, 43,
+	11, 14.5, -11, -6,
+	-14.5, -11, -11, -6,
+	11, 14.5, 6, 11,
+	-14.5, -11, 6, 11,
+	11, 14.5, 19.5, 27,
+	-14.5, -11, 19.5, 27,
+	11, 14.5, 35.5, 43,
+	-14.5, -11, 35.5, 43,
 
 	// benches
 	1, 11, 2, 25,
-	-11, -1, 2, 25
+	-11, -1, 2, 25,
 
+	-14, -11, 50, 55,
+	11, 14, 50, 55
 };
 
 //Procedura obsługi błędów
@@ -213,7 +216,7 @@ float dist(glm::vec3& cam, glm::mat3& p) {
 
 void colision_detection(glm::vec3& position, float& angle) {
 	position = glm::vec3(glm::clamp(position.x, -21.0f, 21.0f), position.y,
-		glm::clamp(position.z, -26.0f, 50.0f));
+		glm::clamp(position.z, -26.0f, 53.0f));
 	if (position.z < 17.0f / 9 * position.x - 146.0f / 3) {
 		position.x = (9.0f * position.z + 438.0f) / 17;
 	}
@@ -237,18 +240,67 @@ void colision_detection(glm::vec3& position, float& angle) {
 	else position.y = -15;
 
 
-	for (int i = 0; i < 13 * 4; i += 4) {
+	for (int i = 0; i < 16 * 4; i += 4) {
 		if (position.x > bounds[i] && position.x < bounds[i + 1] && position.z > bounds[i + 2] && position.z < bounds[i + 3]) {
 			printf("%d/%.1f: %.2f %.2f\t\t%.2f\t\t", i / 4, bounds[i], position.x, position.z, angle);
-
-			if (angle < 0.785f || angle > 5.5f) position.z = bounds[i + 2];
-			else if (angle < 2.356f) position.x = bounds[i];
-			else if (angle < 3.927f) position.z = bounds[i + 3];
-			else position.x = bounds[i + 1];
-
+			if (abs(cos(angle)) > 0.01f) {
+				if (abs(sin(angle)) < 0.01f) {	// perpendicular to an edge
+					if (cos(angle) > 0)
+						position.z = bounds[i + 2];
+					else
+						position.z = bounds[i + 3];
+					printf("%.2f %.2f\n", position.x, position.z);
+					continue;
+				}
+				// possible to calc. tangent
+				int coef_dir = tan(angle);
+				if (sin(angle) > 0 && cos(angle) > 0) {
+					if ((position.x - coef_dir * position.z) < (bounds[i] - coef_dir * bounds[i + 2]))
+						position.x = bounds[i];
+					else
+						position.z = bounds[i + 2];
+				}
+				else if (sin(angle) > 0 && cos(angle) < 0) {
+					if ((position.x - coef_dir * position.z) < (bounds[i] - coef_dir * bounds[i + 3]))
+						position.x = bounds[i];
+					else
+						position.z = bounds[i + 3];
+				}
+				else if (sin(angle) < 0 && cos(angle) > 0) {
+					if ((position.x - coef_dir * position.z) > (bounds[i + 1] - coef_dir * bounds[i + 2]))
+						position.x = bounds[i + 1];
+					else
+						position.z = bounds[i + 2];
+				}
+				else {		// if (sin(angle) < 0 && cos(angle) < 0)
+					if ((position.x - coef_dir * position.z) > (bounds[i + 1] - coef_dir * bounds[i + 3]))
+						position.x = bounds[i + 1];
+					else
+						position.z = bounds[i + 3];
+				}
+			}
+			else {
+				if (sin(angle) > 0)
+					position.x = bounds[i];
+				else
+					position.x = bounds[i + 1];
+			}
 			printf("%.2f %.2f\n", position.x, position.z);
 		}
 	}
+
+	//for (int i = 0; i < 13 * 4; i += 4) {
+	//	if (position.x > bounds[i] && position.x < bounds[i + 1] && position.z > bounds[i + 2] && position.z < bounds[i + 3]) {
+	//		printf("%d/%.1f: %.2f %.2f\t\t%.2f\t\t", i / 4, bounds[i], position.x, position.z, angle);
+
+	//		if (angle < 0.785f || angle > 5.5f) position.z = bounds[i + 2];
+	//		else if (angle < 2.356f) position.x = bounds[i];
+	//		else if (angle < 3.927f) position.z = bounds[i + 3];
+	//		else position.x = bounds[i + 1];
+
+	//		printf("%.2f %.2f\n", position.x, position.z);
+	//	}
+	//}
 }
 
 
@@ -257,8 +309,8 @@ void drawScene(GLFWwindow* window, float position, float angle, float rotation, 
 	//************Tutaj umieszczaj kod rysujący obraz******************l
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	if (angle < 0) angle += 2.0f * PI;
-	if (angle > 2 * PI) angle -= 2.0f * PI;
+	while (angle < 0) angle += 2.0f * PI;
+	while (angle > 2 * PI) angle -= 2.0f * PI;
 
 	glm::vec3 direction = glm::vec3(sin(angle) * 5.0, 0.0f, cos(angle) * 5.0);
 	c_position = c_position + direction * position;
