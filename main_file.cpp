@@ -240,11 +240,12 @@ void colision_detection(glm::vec3& position, float& angle) {
 	else position.y = -15;
 
 
-	for (int i = 0; i < 16 * 4; i += 4) {
+	for (int i = 0; i < 15 * 4; i += 4) {
 		if (position.x > bounds[i] && position.x < bounds[i + 1] && position.z > bounds[i + 2] && position.z < bounds[i + 3]) {
-			printf("%d/%.1f: %.2f %.2f\t\t%.2f\t\t", i / 4, bounds[i], position.x, position.z, angle);
+			printf("%d/%.1f: %.2f %.2f\t\t%.2f\t", i / 4, bounds[i], position.x, position.z, angle);
 			if (abs(cos(angle)) > 0.01f) {
 				if (abs(sin(angle)) < 0.01f) {	// perpendicular to an edge
+					printf(" s0 ");
 					if (cos(angle) > 0)
 						position.z = bounds[i + 2];
 					else
@@ -253,26 +254,30 @@ void colision_detection(glm::vec3& position, float& angle) {
 					continue;
 				}
 				// possible to calc. tangent
-				int coef_dir = tan(angle);
+				float coef_dir = tan(angle);
 				if (sin(angle) > 0 && cos(angle) > 0) {
+					printf(" ++ ");
 					if ((position.x - coef_dir * position.z) < (bounds[i] - coef_dir * bounds[i + 2]))
 						position.x = bounds[i];
 					else
 						position.z = bounds[i + 2];
 				}
 				else if (sin(angle) > 0 && cos(angle) < 0) {
+					printf(" +- ");
 					if ((position.x - coef_dir * position.z) < (bounds[i] - coef_dir * bounds[i + 3]))
 						position.x = bounds[i];
 					else
 						position.z = bounds[i + 3];
 				}
 				else if (sin(angle) < 0 && cos(angle) > 0) {
+					printf(" -+ ");
 					if ((position.x - coef_dir * position.z) > (bounds[i + 1] - coef_dir * bounds[i + 2]))
 						position.x = bounds[i + 1];
 					else
 						position.z = bounds[i + 2];
 				}
 				else {		// if (sin(angle) < 0 && cos(angle) < 0)
+					printf(" -- ");
 					if ((position.x - coef_dir * position.z) > (bounds[i + 1] - coef_dir * bounds[i + 3]))
 						position.x = bounds[i + 1];
 					else
@@ -280,6 +285,7 @@ void colision_detection(glm::vec3& position, float& angle) {
 				}
 			}
 			else {
+				printf(" c0 ");
 				if (sin(angle) > 0)
 					position.x = bounds[i];
 				else
